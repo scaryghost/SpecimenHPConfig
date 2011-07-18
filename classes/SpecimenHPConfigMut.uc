@@ -18,6 +18,24 @@ function PostBeginPlay() {
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     local float newHp, newHeadHp;
 
+    /**
+     *  This solution works for the monsters even though KFMonster.PostBeginPlay()
+     *  is called after CheckReplacement().  Mathematically, the code divides by 
+     *  the current HealthModifer, multiplies the dividend with the new scale if larger, 
+     *  then multiplies the current HealthModifer once PostBeginPlay() is called.
+     *
+     *  tempHp= currHp / oldHealthModifer();
+     *  tempHp*= newHealthModifer(); = (currHp / oldHealthModifer()) * newHealthModifer()
+     *
+     *  ### if (tempHp > currHp) ###
+     *  currHp= tempHp
+     *
+     *  ### PostBeginPlay() called ###
+     *  currHp*= oldHealthModifer() = currHp * newHealthModifer() (Modified behavior)
+     *  ### or (if tempHp <= currHp) ###
+     *  currHp*= oldHEalthModifer() (Original behavior)
+     */
+    
     if (KFMonster(Other) != none) {
         newHp= KFMonster(Other).Health / KFMonster(Other).NumPlayersHealthModifer();
         newHp*= numPlayersScaleHp(KFMonster(Other).PlayerCountHealthScale);
@@ -34,7 +52,6 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
                 KFMonster(Other).MeleeDamage*= (minNumPlayers-6)*0.15;
             }
         }
-        
     }
     return true;
 }
