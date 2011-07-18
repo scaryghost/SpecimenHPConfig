@@ -30,6 +30,9 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
             if(Level.Game.NumPlayers == 1 && minNumPlayers > 1) {
                 KFMonster(Other).MeleeDamage/= 0.75;
             }
+            if(minNumPlayers > 6) {
+                KFMonster(Other).MeleeDamage*= (minNumPlayers-6)*0.15;
+            }
         }
         
     }
@@ -42,7 +45,7 @@ function float numPlayersScaleHp(float hpScale) {
 
 static function FillPlayInfo(PlayInfo PlayInfo) {
     Super.FillPlayInfo(PlayInfo);
-    PlayInfo.AddSetting("Specimen HP Config", "minNumPlayers","Min Number of Players", 0, 1, "Text", "0.1;1:6");
+    PlayInfo.AddSetting("Specimen HP Config", "minNumPlayers","Min Number of Players", 0, 1, "Text", "0.1;1:100");
 }
 
 static event string GetDescriptionText(string property) {
@@ -58,7 +61,7 @@ static event string GetDescriptionText(string property) {
 defaultproperties {
 	GroupName="KFSpecimenHPMut"
 	FriendlyName="Specimen HP Config"
-	Description="Scales the HP of the specimens.  This is version 1.0.0"
+	Description="Scales the HP of the Killing Floor specimens.  This is version 1.0.0"
 
     minNumPlayers= 1
 
