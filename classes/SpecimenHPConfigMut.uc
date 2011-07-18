@@ -29,11 +29,13 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
      *
      *  ### if (tempHp > currHp) ###
      *  currHp= tempHp
+     *  ### else ###
+     *  currHp= currHp
      *
      *  ### PostBeginPlay() called ###
      *  currHp*= oldHealthModifer() = currHp * newHealthModifer() (Modified behavior)
      *  ### or (if tempHp <= currHp) ###
-     *  currHp*= oldHEalthModifer() (Original behavior)
+     *  currHp*= oldHealthModifer() (Original behavior)
      */
     
     if (KFMonster(Other) != none) {
