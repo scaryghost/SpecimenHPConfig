@@ -51,7 +51,11 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
                 KFMonster(Other).MeleeDamage/= 0.75;
             }
             if(minNumPlayers > 6) {
-                KFMonster(Other).MeleeDamage*= (minNumPlayers-6)*0.15;
+                /**
+                 *  Increase the specimen's damgae by 5% for each 
+                 *  person beyond 6
+                 */
+                KFMonster(Other).MeleeDamage*= (minNumPlayers-6)*0.05;
             }
         }
     } else if (SyringePickup(Other) != none) {
