@@ -58,13 +58,6 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
                 KFMonster(Other).MeleeDamage*= (minNumPlayers-6)*0.05;
             }
         }
-    } else if (SyringePickup(Other) != none) {
-        log("It's a pickup!");
-        ReplaceWith(Other,"SpecimenHPConfig.SHPCSyringePickup");
-        return false;
-    } else if (KFHumanPawn(Other) != none) {
-        log("It's a human pawn!");
-        KFHumanPawn(Other).RequiredEquipment[3]= "SpecimenHPConfig.SHPCSyringe";
     }
     return true;
 }
