@@ -55,7 +55,7 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
                  *  Increase the specimen's damgae by 5% for each 
                  *  person beyond 6
                  */
-                KFMonster(Other).MeleeDamage*= (minNumPlayers-6)*0.05;
+                KFMonster(Other).MeleeDamage*= 1+(minNumPlayers-6)*0.05;
             }
         }
     }
