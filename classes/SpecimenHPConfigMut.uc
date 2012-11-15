@@ -71,8 +71,8 @@ static event string GetDescriptionText(string property) {
 
 defaultproperties {
 	GroupName="KFSpecimenHPMut"
-	FriendlyName="Specimen HP Config"
-	Description="Scales the HP of the Killing Floor specimens.  This is version 1.0.0"
+	FriendlyName="Specimen HP Config v1.1"
+	Description="Scales the HP of the Killing Floor specimens"
 
     minNumPlayers= 1
 
