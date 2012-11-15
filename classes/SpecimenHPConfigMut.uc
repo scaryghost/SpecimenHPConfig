@@ -4,11 +4,7 @@ class SpecimenHPConfigMut extends Mutator
 var() config int minNumPlayers;
 
 function PostBeginPlay() {
-    local KFGameType KF;
-
-    KF = KFGameType(Level.Game);
-
-    if (KF == none) {
+    if (KFGameType(Level.Game) == none) {
         Destroy();
         return;
     }
@@ -17,7 +13,7 @@ function PostBeginPlay() {
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     local float newHp, newHeadHp;
-
+    local KFMonster monster;
     /**
      *  This solution works for the monsters even though KFMonster.PostBeginPlay()
      *  is called after CheckReplacement().  Mathematically, the code divides by 
@@ -39,30 +35,22 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
      */
     
     if (KFMonster(Other) != none) {
-        newHp= KFMonster(Other).Health / KFMonster(Other).NumPlayersHealthModifer();
-        newHp*= numPlayersScaleHp(KFMonster(Other).PlayerCountHealthScale);
-        newHeadHp= KFMonster(Other).HeadHealth / KFMonster(Other).NumPlayersHeadHealthModifer();
-        newHeadHp*= numPlayersScaleHp(KFMonster(Other).PlayerNumHeadHealthScale);
-        if(newHp > KFMonster(Other).Health) {
-            KFMonster(Other).Health= newHp;
-            KFMonster(Other).HealthMax= newHp;
-            KFMonster(Other).HeadHealth= newHeadHp;
+        monster= KFMonster(Other);
+        newHp= monster.Health / monster.NumPlayersHealthModifer() * hpScale(monster.PlayerCountHealthScale);
+        newHeadHp= monster.HeadHealth / monster.NumPlayersHeadHealthModifer() * hpScale(monster.PlayerNumHeadHealthScale);
+        if(newHp > monster.Health) {
+            monster.Health= newHp;
+            monster.HealthMax= newHp;
+            monster.HeadHealth= newHeadHp;
             if(Level.Game.NumPlayers == 1 && minNumPlayers > 1) {
-                KFMonster(Other).MeleeDamage/= 0.75;
-            }
-            if(minNumPlayers > 6) {
-                /**
-                 *  Increase the specimen's damgae by 5% for each 
-                 *  person beyond 6
-                 */
-                KFMonster(Other).MeleeDamage*= 1+(minNumPlayers-6)*0.05;
+                monster.MeleeDamage/= 0.75;
             }
         }
     }
     return true;
 }
 
-function float numPlayersScaleHp(float hpScale) {
+function float hpScale(float hpScale) {
     return 1.0+(minNumPlayers-1)*hpScale;
 }
 
