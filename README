@@ -7,13 +7,9 @@ Copy the contents in the system folder to your Killing Floor system folder.
 Usage:
 Set the minNumPlayers variable to whatever number you want between 1-100.  
 The mutator will then scale every specimen's hp to that player count, 
-regardless of how many living players there are.  Setting the player count 
-beyond 6 will give the specimen's a slight boost in damage, 5% per player.  
-Also, if the count is less than the number of living players, the hp will  
-scale to the number of living players.
+regardless of how many living players there are.  If the count is less than 
+the number of living players, the hp will instead scale to the number of 
+living players.
 
 Source code:
 https://github.com/scaryghost/SpecimenHPConfig
-
-Download:
-http://dl.dropbox.com/u/16251678/SpecimenHPConfig_v1.0.0.zip
