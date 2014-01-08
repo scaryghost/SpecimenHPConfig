@@ -12,8 +12,10 @@ function PostBeginPlay() {
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
-    local float newHp, newHeadHp;
     local KFMonster monster;
+    local Controller cIt;
+    local int currNumPlayers;
+
     /**
      *  This solution works for the monsters even though KFMonster.PostBeginPlay()
      *  is called after CheckReplacement().  Mathematically, the code divides by 
@@ -34,24 +36,33 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
      *  currHp*= oldHealthModifer() (Original behavior)
      */
     
-    if (KFMonster(Other) != none) {
-        monster= KFMonster(Other);
-        newHp= monster.Health / monster.NumPlayersHealthModifer() * hpScale(monster.PlayerCountHealthScale);
-        newHeadHp= monster.HeadHealth / monster.NumPlayersHeadHealthModifer() * hpScale(monster.PlayerNumHeadHealthScale);
-        if(newHp > monster.Health) {
-            monster.Health= newHp;
-            monster.HealthMax= newHp;
-            monster.HeadHealth= newHeadHp;
-            if(Level.Game.NumPlayers == 1 && minNumPlayers > 1) {
-                monster.MeleeDamage/= 0.75;
+    monster= KFMonster(Other);
+    if (monster != None) {
+        for(cIt= Level.ControllerList; cIt.Pawn != None; cIt= cIt.NextController) {
+            if (cIt.bIsPlayer && cIt.Pawn != None && cIt.Pawn.Health > 0) {
+                currNumPlayers++;
             }
         }
+        if (currNumPlayers < minNumPlayers) {
+            monster.Health*= hpScale(monster.PlayerCountHealthScale) / monster.NumPlayersHealthModifer();
+            monster.HealthMax= monster.Health;
+            monster.HeadHealth*= hpScale(monster.PlayerNumHeadHealthScale) / monster.NumPlayersHeadHealthModifer();
+
+            if(Level.Game.NumPlayers == 1 && minNumPlayers > 1) {
+                monster.MeleeDamage/= 0.75;
+                monster.ScreamDamage/= 0.75;
+                ///< These two variables aren't used by the FP but set them anyways
+                monster.SpinDamConst/= 0.75;
+                monster.SpinDamRand/= 0.75;
+            }
+        }
+            
     }
     return true;
 }
 
 function float hpScale(float hpScale) {
-    return 1.0+(minNumPlayers-1)*hpScale;
+    return 1.0 + (minNumPlayers - 1) * hpScale;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo) {
@@ -70,9 +81,9 @@ static event string GetDescriptionText(string property) {
 
 
 defaultproperties {
-	GroupName="KFSpecimenHPMut"
-	FriendlyName="Specimen HP Config v1.1"
-	Description="Scales the HP of the Killing Floor specimens"
+    GroupName="KFSpecimenHPMut"
+    FriendlyName="Specimen HP Config v1.1"
+    Description="Scales the HP of the Killing Floor specimens"
 
     minNumPlayers= 1
-
+}
