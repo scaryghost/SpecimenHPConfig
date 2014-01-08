@@ -2,13 +2,22 @@ class SpecimenHPConfigMut extends Mutator
     config(SpecimenHPConfig);
 
 var() config int minNumPlayers;
+var array<Syringe> syringes;
 
 function PostBeginPlay() {
     if (KFGameType(Level.Game) == none) {
         Destroy();
         return;
     }
+}
 
+function Timer() {
+    local int i;
+
+    for(i= 0; i < syringes.Length; i++) {
+        syringes[i].HealBoostAmount= syringes[i].default.HealBoostAmount;
+    }
+    syringes.Length= 0;
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
@@ -56,7 +65,9 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
                 monster.SpinDamRand/= 0.75;
             }
         }
-            
+    } else if (Level.Game.NumPlayers == 1 && minNumPlayers > 1 && Syringe(Other) != none) {
+        syringes[syringes.Length]= Syringe(Other);
+        SetTimer(1.0, false);
     }
     return true;
 }
@@ -82,7 +93,7 @@ static event string GetDescriptionText(string property) {
 
 defaultproperties {
     GroupName="KFSpecimenHPMut"
-    FriendlyName="Specimen HP Config v1.1"
+    FriendlyName="Specimen HP Config v1.2"
     Description="Scales the HP of the Killing Floor specimens"
 
     minNumPlayers= 1
