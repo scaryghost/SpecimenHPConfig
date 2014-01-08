@@ -2,6 +2,7 @@ class SpecimenHPConfigMut extends Mutator
     config(SpecimenHPConfig);
 
 var() config int minNumPlayers;
+var int maxAllowedPlayers;      ///< Cap it the number of players at 6
 var array<Syringe> syringes;
 
 function PostBeginPlay() {
@@ -9,6 +10,7 @@ function PostBeginPlay() {
         Destroy();
         return;
     }
+    minNumPlayers= min(minNumPlayers, maxAllowedPlayers);
 }
 
 function Timer() {
@@ -78,7 +80,7 @@ function float hpScale(float hpScale) {
 
 static function FillPlayInfo(PlayInfo PlayInfo) {
     Super.FillPlayInfo(PlayInfo);
-    PlayInfo.AddSetting("Specimen HP Config", "minNumPlayers","Min Number of Players", 0, 1, "Text", "0.1;1:100");
+    PlayInfo.AddSetting("Specimen HP Config", "minNumPlayers","Min Number of Players", 0, 1, "Text", "0.1;1:6");
 }
 
 static event string GetDescriptionText(string property) {
@@ -97,4 +99,5 @@ defaultproperties {
     Description="Scales the HP of the Killing Floor specimens"
 
     minNumPlayers= 1
+    maxAllowedPlayers= 6
 }
