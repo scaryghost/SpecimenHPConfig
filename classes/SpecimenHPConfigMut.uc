@@ -29,24 +29,11 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
 
     /**
      *  This solution works for the monsters even though KFMonster.PostBeginPlay()
-     *  is called after CheckReplacement().  Mathematically, the code divides by 
-     *  the current HealthModifer, multiplies the dividend with the new scale if larger, 
-     *  then multiplies the current HealthModifer once PostBeginPlay() is called.
-     *
-     *  tempHp= currHp / oldHealthModifer();
-     *  tempHp*= newHealthModifer(); = (currHp / oldHealthModifer()) * newHealthModifer()
-     *
-     *  ### if (tempHp > currHp) ###
-     *  currHp= tempHp
-     *  ### else ###
-     *  currHp= currHp
-     *
-     *  ### PostBeginPlay() called ###
-     *  currHp*= oldHealthModifer() = currHp * newHealthModifer() (Modified behavior)
-     *  ### or (if tempHp <= currHp) ###
-     *  currHp*= oldHealthModifer() (Original behavior)
+     *  is called after CheckReplacement().  Mathematically, the code:
+     *      1) multiplies the monster's health by a ratio of 'newModifier / oldModifier'
+     *      2) multiply back in 'oldModifier' in KFMonster.PostBeginPlay leavin gonl 'newModifier'
+     *         as the health scale value
      */
-    
     monster= KFMonster(Other);
     if (monster != None) {
         for(cIt= Level.ControllerList; cIt.Pawn != None; cIt= cIt.NextController) {
@@ -54,11 +41,13 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
                 currNumPlayers++;
             }
         }
+        /** Only apply the scaling if the number of living players is less than the amount set by the mutator */
         if (currNumPlayers < minNumPlayers) {
             monster.Health*= hpScale(monster.PlayerCountHealthScale) / monster.NumPlayersHealthModifer();
             monster.HealthMax= monster.Health;
             monster.HeadHealth*= hpScale(monster.PlayerNumHeadHealthScale) / monster.NumPlayersHeadHealthModifer();
 
+            /** Appropriately adjust other variables dependent on the player count */
             if(Level.Game.NumPlayers == 1 && minNumPlayers > 1) {
                 monster.MeleeDamage/= 0.75;
                 monster.ScreamDamage/= 0.75;
