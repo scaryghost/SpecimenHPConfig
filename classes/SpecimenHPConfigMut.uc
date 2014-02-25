@@ -3,6 +3,7 @@ class SpecimenHPConfigMut extends Mutator
 
 var() config int minNumPlayers;
 var int maxAllowedPlayers;      ///< Cap it the number of players at 6
+var int minAllowedPlayers;      ///< Must be set to min 1
 var array<Syringe> syringes;
 
 function PostBeginPlay() {
@@ -10,7 +11,8 @@ function PostBeginPlay() {
         Destroy();
         return;
     }
-    minNumPlayers= min(minNumPlayers, maxAllowedPlayers);
+    minNumPlayers= max(minAllowedPlayers, min(minNumPlayers, maxAllowedPlayers));
+    Log("SpecimenHPConfig - Scaling specimen hp by a minimum player count of:"@minNumPlayers);
 }
 
 function Timer() {
@@ -89,4 +91,5 @@ defaultproperties {
 
     minNumPlayers= 1
     maxAllowedPlayers= 6
+    minAllowedPlayers= 1
 }
