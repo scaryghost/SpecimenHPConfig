@@ -1,7 +1,7 @@
 class SpecimenHPConfigMut extends Mutator
     config(SpecimenHPConfig);
 
-var() config int minNumPlayers;
+var() globalconfig int minNumPlayers;
 var int maxAllowedPlayers;      ///< Cap it the number of players at 6
 var int minAllowedPlayers;      ///< Must be set to min 1
 var array<Syringe> syringes;
@@ -38,7 +38,7 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
      */
     monster= KFMonster(Other);
     if (monster != None) {
-        for(cIt= Level.ControllerList; cIt.Pawn != None; cIt= cIt.NextController) {
+        for(cIt= Level.ControllerList; cIt != None; cIt= cIt.NextController) {
             if (cIt.bIsPlayer && cIt.Pawn != None && cIt.Pawn.Health > 0) {
                 currNumPlayers++;
             }
@@ -86,7 +86,7 @@ static event string GetDescriptionText(string property) {
 
 defaultproperties {
     GroupName="KFSpecimenHPMut"
-    FriendlyName="Specimen HP Config v1.2"
+    FriendlyName="Specimen HP Config v1.2.1"
     Description="Scales the HP of the Killing Floor specimens"
 
     minNumPlayers= 1
