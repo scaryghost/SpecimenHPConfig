@@ -71,7 +71,8 @@ function float hpScale(float hpScale) {
 
 static function FillPlayInfo(PlayInfo PlayInfo) {
     Super.FillPlayInfo(PlayInfo);
-    PlayInfo.AddSetting("Specimen HP Config", "minNumPlayers","Min Number of Players", 0, 1, "Text", "0.1;1:6");
+    PlayInfo.AddSetting("Specimen HP Config", "minNumPlayers","Min Number of Players", 0, 1, "Text", 
+            "0.1;1:" $ default.maxAllowedPlayers);
 }
 
 static event string GetDescriptionText(string property) {
